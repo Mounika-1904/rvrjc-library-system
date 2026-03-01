@@ -460,12 +460,12 @@ async function fetchBooks(dept = 'All') {
                             <div class="d-grid gap-2">
                                 <button 
                                     onclick="addToCart(${book.id})" 
-                                    class="btn-add-cart"
+                                    class="btn btn-dark w-100 fw-bold shadow-sm"
                                     ${!isAvailable ? 'disabled title="This book is currently out of stock"' : ''}
                                 >
                                     Add to Cart
                                 </button>
-                                <button onclick="issueBook(${book.id})" class="btn-issue ${!isAvailable ? 'disabled' : ''}" ${!isAvailable ? 'disabled' : ''}>
+                                <button onclick="issueBook(${book.id})" class="btn btn-warning w-100 fw-bold border-warning shadow-sm ${!isAvailable ? 'disabled' : ''}" ${!isAvailable ? 'disabled' : ''}>
                                     ${isAvailable ? 'Issue Now' : 'Not Available'}
                                 </button>
                             </div>
@@ -556,6 +556,9 @@ async function issueBook(id) {
         document.body.insertAdjacentHTML('beforeend', modalHtml);
         modalEl = document.getElementById(modalId);
 
+        // Initialize explicitly so getInstance works later
+        new bootstrap.Modal(modalEl);
+
         document.getElementById('issueBookForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const form = e.target;
@@ -570,7 +573,9 @@ async function issueBook(id) {
             };
 
             const modalInstance = bootstrap.Modal.getInstance(modalEl);
-            modalInstance.hide();
+            if (modalInstance) {
+                modalInstance.hide();
+            }
 
             toggleLoading(true);
             try {
@@ -611,8 +616,8 @@ async function issueBook(id) {
     }
 
     document.getElementById('issueModalBookId').value = id;
-    const modal = new bootstrap.Modal(modalEl);
-    modal.show();
+    const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+    modalInstance.show();
 }
 
 async function updateCartBadge() {
