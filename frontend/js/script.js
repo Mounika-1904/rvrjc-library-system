@@ -569,10 +569,17 @@ async function issueBook(id) {
                         loadCartItems();
                     }
                 } else {
-                    showToast(data.message || 'Error issuing book', 'error');
+                    if (data.isExpired || res.status === 401) {
+                        showToast('Your session has expired. Please login again.', 'error');
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        setTimeout(() => window.location.href = 'login.html', 1500);
+                    } else {
+                        showToast(data.message || 'Error issuing book', 'error');
+                    }
                 }
             } catch (err) {
-                showToast('Error issuing book', 'error');
+                showToast('Network error while issuing book', 'error');
             } finally {
                 toggleLoading(false);
             }
