@@ -89,15 +89,17 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th>User</th>
+                            <th>User (Roll No)</th>
                             <th>Book Title</th>
+                            <th>Branch</th>
                             <th>Issued Date</th>
+                            <th>Due Date</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody id="activityTable">
                         <tr>
-                            <td colspan="4" class="text-center py-4 text-muted">Loading activity...</td>
+                            <td colspan="6" class="text-center py-4 text-muted">Loading activity...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -274,21 +276,33 @@
                 const activities = await res.json();
                 const table = document.getElementById('activityTable');
                 if (activities.length === 0) {
-                    table.innerHTML = '<tr><td colspan="4" class="text-center py-4">No recent activity found.</td></tr>';
+                    table.innerHTML = '<tr><td colspan="6" class="text-center py-4">No recent activity found.</td></tr>';
                     return;
                 }
-                table.innerHTML = activities.map(act => `
-                    <tr>
-                        <td class="fw-bold">${act.userName}</td>
-                        <td class="text-muted">${act.bookTitle}</td>
+                const today = new Date();
+                table.innerHTML = activities.map(act => {
+                    const dueDate = new Date(act.due_date);
+                    const isOverdue = !act.returned_at && dueDate < today;
+
+                    let statusHtml = '';
+                    if (act.returned_at) {
+                        statusHtml = '<span class="badge bg-success-subtle text-success">Returned</span>';
+                    } else if (isOverdue) {
+                        statusHtml = '<span class="badge bg-danger text-white">Overdue</span>';
+                    } else {
+                        statusHtml = '<span class="badge bg-warning-subtle text-warning">Active</span>';
+                    }
+
+                    return `
+                    <tr class="${isOverdue ? 'table-danger' : ''}">
+                        <td><span class="fw-bold d-block">${act.userName}</span><small class="text-muted fw-semibold">${act.rollno || 'N/A'}</small></td>
+                        <td class="text-dark fw-semibold">${act.bookTitle}</td>
+                        <td>${act.branch || 'N/A'}</td>
                         <td>${new Date(act.issued_at).toLocaleDateString()}</td>
-                        <td>
-                            <span class="badge ${act.returned_at ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning'}">
-                                ${act.returned_at ? 'Returned' : 'Active'}
-                            </span>
-                        </td>
-                    </tr>
-                `).join('');
+                        <td class="${isOverdue ? 'text-danger fw-bold' : ''}">${dueDate.toLocaleDateString()}</td>
+                        <td>${statusHtml}</td>
+                    </tr>`;
+                }).join('');
             } catch (err) {
                 console.error('Error loading activity');
             }

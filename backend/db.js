@@ -1150,6 +1150,25 @@ const initDB = async () => {
             )
         `);
 
+        // Issued Books Table
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS issued_books (
+                id SERIAL PRIMARY KEY,
+                user_id INT NOT NULL,
+                book_id INT NOT NULL,
+                branch VARCHAR(100),
+                issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                due_date TIMESTAMP,
+                returned_at TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
+            )
+        `);
+
+        // Add columns for existing databases
+        try { await client.query('ALTER TABLE issued_books ADD COLUMN IF NOT EXISTS branch VARCHAR(100);'); } catch (e) { console.warn('Could not alter issued_books branch', e.message); }
+        try { await client.query('ALTER TABLE issued_books ADD COLUMN IF NOT EXISTS due_date TIMESTAMP;'); } catch (e) { console.warn('Could not alter issued_books due_date', e.message); }
+
         // Cart Table
         await client.query(`
             CREATE TABLE IF NOT EXISTS cart (

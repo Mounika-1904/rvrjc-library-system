@@ -30,7 +30,7 @@ router.get('/stats', protect, adminOnly, async (req, res) => {
 router.get('/activity', protect, adminOnly, async (req, res) => {
     try {
         const query = `
-            SELECT i.id, u.name as userName, b.title as bookTitle, i.issued_at, i.returned_at
+            SELECT i.id, u.name as userName, u.unique_id as rollNo, i.branch, i.due_date, b.title as bookTitle, i.issued_at, i.returned_at
             FROM issued_books i
             JOIN users u ON i.user_id = u.id
             JOIN books b ON i.book_id = b.id

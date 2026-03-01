@@ -42,7 +42,7 @@ router.get('/', async (req, res) => {
 
 // Issue a book (New Implementation with Track Record)
 router.post('/issue', protect, async (req, res) => {
-    const { userId, bookId, name, email, rollNumber } = req.body;
+    const { userId, bookId, name, email, rollNumber, branch } = req.body;
 
     if (!userId || !bookId) {
         return res.status(400).json({ message: 'User ID and Book ID are required.' });
@@ -67,9 +67,11 @@ router.post('/issue', protect, async (req, res) => {
         await connection.query('UPDATE books SET available = FALSE WHERE id = $1', [bookId]);
 
         // 3. Create issuance record
+        const dueDate = new Date();
+        dueDate.setDate(dueDate.getDate() + 14);
         await connection.query(
-            'INSERT INTO issued_books (user_id, book_id) VALUES ($1, $2)',
-            [userId, bookId]
+            'INSERT INTO issued_books (user_id, book_id, branch, due_date) VALUES ($1, $2, $3, $4)',
+            [userId, bookId, branch || null, dueDate]
         );
 
         // 4. Send Confirmation Email
@@ -94,6 +96,8 @@ router.post('/issue', protect, async (req, res) => {
                         <p>Hello ${name || 'Student'},</p>
                         <p>You have successfully requested to issue <strong>${books[0].title}</strong> (ID: ${bookId}).</p>
                         <p><strong>Roll Number:</strong> ${rollNumber || 'N/A'}</p>
+                        <p><strong>Branch:</strong> ${branch || 'N/A'}</p>
+                        <p><strong>Due Date:</strong> ${dueDate.toLocaleDateString()}</p>
                         <p>Please collect it from the library within 24 hours.</p>
                         <br>
                         <p>Regards,<br>RVR & JC Library Team</p>
@@ -178,6 +182,23 @@ router.post('/return', protect, async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error during return.' });
     } finally {
         connection.release();
+    }
+});
+
+// Get user's active/past issued books
+router.get('/my-issued', protect, async (req, res) => {
+    try {
+        const query = `
+            SELECT i.id as issue_id, i.issued_at, i.due_date, i.branch, i.returned_at, b.*
+            FROM issued_books i
+            JOIN books b ON i.book_id = b.id
+            WHERE i.user_id = $1
+            ORDER BY i.issued_at DESC
+        `;
+        const [rows] = await db.query(query, [req.user.id]);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 

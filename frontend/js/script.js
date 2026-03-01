@@ -357,6 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateCartBadge();
     loadCartItems();
+    fetchMyIssuedBooks();
 });
 
 
@@ -516,6 +517,28 @@ async function issueBook(id) {
                                 <label class="form-label text-muted small fw-bold">Email Address</label>
                                 <input type="email" class="form-control bg-light" name="email" required value="${user.email || ''}">
                             </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold">Branch / Department</label>
+                                <select class="form-select bg-light" name="branch" required>
+                                    <option value="" disabled selected>Select your branch</option>
+                                    <option value="CSE" ${user.department === 'CSE' ? 'selected' : ''}>CSE</option>
+                                    <option value="ECE" ${user.department === 'ECE' ? 'selected' : ''}>ECE</option>
+                                    <option value="Information Technology" ${user.department === 'Information Technology' ? 'selected' : ''}>IT</option>
+                                    <option value="Mechanical Engineering" ${user.department === 'Mechanical Engineering' ? 'selected' : ''}>Mechanical Engineering</option>
+                                    <option value="Civil Engineering" ${user.department === 'Civil Engineering' ? 'selected' : ''}>Civil Engineering</option>
+                                    <option value="Chemical Engineering" ${user.department === 'Chemical Engineering' ? 'selected' : ''}>Chemical Engineering</option>
+                                    <option value="CSBS" ${user.department === 'CSBS' ? 'selected' : ''}>CSBS</option>
+                                    <option value="CSE-DS" ${user.department === 'CSE-DS' ? 'selected' : ''}>CSE-DS</option>
+                                    <option value="CSE-AIML" ${user.department === 'CSE-AIML' ? 'selected' : ''}>CSE-AIML</option>
+                                    <option value="CSE-IoT" ${user.department === 'CSE-IoT' ? 'selected' : ''}>CSE-IoT</option>
+                                    <option value="EEE" ${user.department === 'EEE' ? 'selected' : ''}>EEE</option>
+                                    <option value="Computer Applications" ${user.department === 'Computer Applications' ? 'selected' : ''}>Computer Applications</option>
+                                    <option value="Management Sciences" ${user.department === 'Management Sciences' ? 'selected' : ''}>Management Sciences</option>
+                                    <option value="Mathematics & Humanities" ${user.department === 'Mathematics & Humanities' ? 'selected' : ''}>Mathematics & Humanities</option>
+                                    <option value="Chemistry" ${user.department === 'Chemistry' ? 'selected' : ''}>Chemistry</option>
+                                    <option value="Physics" ${user.department === 'Physics' ? 'selected' : ''}>Physics</option>
+                                </select>
+                            </div>
                             <div class="mb-4">
                                 <label class="form-label text-muted small fw-bold">Roll Number / ID</label>
                                 <input type="text" class="form-control bg-light" name="rollNumber" required value="${user.uniqueId}">
@@ -542,7 +565,8 @@ async function issueBook(id) {
                 bookId: bookId,
                 name: form.name.value,
                 email: form.email.value,
-                rollNumber: form.rollNumber.value
+                rollNumber: form.rollNumber.value,
+                branch: form.branch.value
             };
 
             const modalInstance = bootstrap.Modal.getInstance(modalEl);
@@ -769,4 +793,58 @@ async function removeFromCart(cartId) {
         toggleLoading(false);
     }
 }
+
+async function fetchMyIssuedBooks() {
+    const container = document.getElementById('issuedBooksContainer');
+    if (!container) return; // Only runs on cart page
+
+    let token = localStorage.getItem('token');
+    if (token === 'undefined' || token === 'null' || !token) {
+        container.innerHTML = '<div class="col-12 text-center py-4 text-muted">Please login to view issued books.</div>';
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_URL}/books/my-issued`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.status === 401) {
+            container.innerHTML = '<div class="col-12 text-center py-4 text-muted">Session expired. Please <a href="login.html">login</a></div>';
+            return;
+        }
+
+        const items = await res.json();
+
+        if (!items || items.length === 0) {
+            container.innerHTML = '<div class="col-12 text-center py-4 text-muted border border-light rounded bg-light">You have no currently issued books.</div>';
+            return;
+        }
+
+        const today = new Date();
+        container.innerHTML = items.map(item => {
+            const dueDate = new Date(item.due_date);
+            const isOverdue = dueDate < today;
+            const dueText = isOverdue
+                ? `<span class="text-danger fw-bold"><svg width="16" height="16" class="me-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>OVERDUE (was due ${dueDate.toLocaleDateString()})</span>`
+                : `<span class="text-success fw-bold">Due by ${dueDate.toLocaleDateString()}</span>`;
+
+            return `
+            <div class="col-lg-8 mx-auto mb-3">
+                <div class="card shadow-sm border-0 flex-row align-items-center p-3 cart-item-card hover-lift ${isOverdue ? 'border-danger border border-2 bg-danger-subtle' : ''}">
+                    <img src="${item.image_url}" alt="${item.title}" style="width: 70px; height: 95px; object-fit: cover; border-radius: 6px;" class="me-4 shadow-sm">
+                    <div class="flex-grow-1">
+                        <h5 class="mb-1 text-dark fw-bold">${item.title}</h5>
+                        <p class="text-muted small mb-1">By ${item.author} &bull; <span class="fw-semibold text-dark">${item.branch || item.department}</span></p>
+                        <p class="small mb-0">${dueText}</p>
+                    </div>
+                </div>
+            </div>
+            `;
+        }).join('');
+    } catch (err) {
+        container.innerHTML = '<div class="text-danger text-center py-4">Failed to load issued books.</div>';
+    }
+}
+
 
