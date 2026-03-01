@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const { protect } = require('../middleware/authMiddleware');
+const nodemailer = require('nodemailer');
 
 // Valid departments list for validation
 const validDepartments = [
@@ -41,7 +42,7 @@ router.get('/', async (req, res) => {
 
 // Issue a book (New Implementation with Track Record)
 router.post('/issue', protect, async (req, res) => {
-    const { userId, bookId } = req.body;
+    const { userId, bookId, name, email, rollNumber } = req.body;
 
     if (!userId || !bookId) {
         return res.status(400).json({ message: 'User ID and Book ID are required.' });
@@ -52,7 +53,7 @@ router.post('/issue', protect, async (req, res) => {
         await connection.beginTransaction();
 
         // 1. Check book availability
-        const [books] = await connection.query('SELECT available FROM books WHERE id = $1 FOR UPDATE', [bookId]);
+        const [books] = await connection.query('SELECT title, available FROM books WHERE id = $1 FOR UPDATE', [bookId]);
         if (books.length === 0) {
             await connection.rollback();
             return res.status(404).json({ message: 'Book not found.' });
@@ -70,6 +71,42 @@ router.post('/issue', protect, async (req, res) => {
             'INSERT INTO issued_books (user_id, book_id) VALUES ($1, $2)',
             [userId, bookId]
         );
+
+        // 4. Send Confirmation Email
+        if (email) {
+            try {
+                console.log(`Preparing to send confirmation email to ${email} for book: ${books[0].title}`);
+                const transporter = nodemailer.createTransport({
+                    host: process.env.SMTP_HOST || 'smtp.ethereal.email',
+                    port: process.env.SMTP_PORT || 587,
+                    auth: {
+                        user: process.env.SMTP_USER || 'test',
+                        pass: process.env.SMTP_PASS || 'test'
+                    }
+                });
+
+                transporter.sendMail({
+                    from: '"RVR & JC Library" <library@rvrjc.ac.in>',
+                    to: email,
+                    subject: 'Book Issuance Confirmation',
+                    html: `
+                        <h3>Book Issuance Successful</h3>
+                        <p>Hello ${name || 'Student'},</p>
+                        <p>You have successfully requested to issue <strong>${books[0].title}</strong> (ID: ${bookId}).</p>
+                        <p><strong>Roll Number:</strong> ${rollNumber || 'N/A'}</p>
+                        <p>Please collect it from the library within 24 hours.</p>
+                        <br>
+                        <p>Regards,<br>RVR & JC Library Team</p>
+                    `
+                }).then(info => {
+                    console.log('Confirmation email send attempt completed', info.messageId);
+                }).catch(e => {
+                    console.error('Failed to send confirmation email (Ensure SMTP config is correct in .env):', e.message);
+                });
+            } catch (emailErr) {
+                console.error('Email preparation failed', emailErr);
+            }
+        }
 
         await connection.commit();
         res.json({ message: 'Book issued successfully and record created.' });

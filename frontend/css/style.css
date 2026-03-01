@@ -368,6 +368,16 @@ button:focus {
     transform: scale(1.05);
 }
 
+/* Admin Specific Profile Styles */
+.profile-dropdown.admin-profile .profile-avatar {
+    border: 2px solid #ef4444;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+}
+
+.profile-dropdown.admin-profile .profile-menu {
+    border-top: 4px solid #ef4444;
+}
+
 .profile-menu {
     position: absolute;
     top: calc(100% + 10px);

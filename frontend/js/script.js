@@ -84,18 +84,22 @@ const checkAuth = () => {
 
             const initials = user?.name ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'U';
 
+            const isAdmin = user?.role === 'admin';
             profileLi.innerHTML = `
-                <div class="profile-dropdown" id="profileDropdown">
-                    <div class="profile-avatar">${initials}</div>
+                <div class="profile-dropdown ${isAdmin ? 'admin-profile' : ''}" id="profileDropdown">
+                    <div class="profile-avatar ${isAdmin ? 'bg-danger text-white' : ''}">${initials}</div>
                     <div class="profile-menu">
                         <div class="profile-menu-header">
-                            <h4 class="profile-menu-name">${user?.name || 'User'}</h4>
+                            <h4 class="profile-menu-name d-flex align-items-center justify-content-between">
+                                ${user?.name || 'User'}
+                                ${isAdmin ? '<span class="badge bg-danger ms-2" style="font-size: 0.6rem;">ADMIN</span>' : ''}
+                            </h4>
                             <span class="profile-menu-id">${user?.uniqueId || 'ID'}</span>
                         </div>
                         <ul class="profile-menu-list">
                             <li class="profile-menu-item">
                                 <span>Role</span>
-                                <span class="text-capitalize">${user?.role || 'Student'}</span>
+                                <span class="text-capitalize ${isAdmin ? 'text-danger fw-bold' : 'text-primary fw-bold'}">${user?.role || 'Student'}</span>
                             </li>
                             <li class="profile-menu-item">
                                 <span>Dept</span>
@@ -103,6 +107,11 @@ const checkAuth = () => {
                             </li>
                         </ul>
                         <button class="profile-menu-logout" id="logoutBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="me-2" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
                             Logout
                         </button>
                     </div>
@@ -176,6 +185,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }, { threshold: 0.5 });
+
+    const statsSection = document.querySelector('.stats-section');
+    if (statsSection) {
+        observer.observe(statsSection);
+    }
 
     // Navbar Scroll Effect
     const navbar = document.querySelector('.navbar');
@@ -477,32 +491,97 @@ async function issueBook(id) {
         return;
     }
 
-    showConfirm('Confirm Issue', 'Are you sure you want to issue this book?', async () => {
-        const user = JSON.parse(userStr);
-        toggleLoading(true);
-        try {
-            const res = await fetch(`${API_URL}/books/issue`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ userId: user.id, bookId: id })
-            });
-            const data = await res.json();
-            if (res.ok) {
-                showToast('Book issued successfully!');
-                const deptFilter = document.getElementById('deptFilter');
-                fetchBooks(deptFilter ? deptFilter.value : 'All');
-            } else {
-                showToast(data.message, 'error');
+    const user = JSON.parse(userStr);
+    const modalId = 'issueBookModal';
+    let modalEl = document.getElementById(modalId);
+
+    // Inject Modal if it doesn't exist
+    if (!modalEl) {
+        const modalHtml = `
+        <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
+                    <div class="modal-header border-0 pb-0">
+                        <h5 class="fw-bold fs-4" style="color: var(--primary-blue);">Issue Book</h5>
+                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4 pt-2">
+                        <p class="text-muted small mb-4">Please confirm your details to issue this book. A confirmation email will be sent to the address provided.</p>
+                        <form id="issueBookForm">
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold">Full Name</label>
+                                <input type="text" class="form-control bg-light" name="name" required value="${user.name}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold">Email Address</label>
+                                <input type="email" class="form-control bg-light" name="email" required value="${user.email || ''}">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label text-muted small fw-bold">Roll Number / ID</label>
+                                <input type="text" class="form-control bg-light" name="rollNumber" required value="${user.uniqueId}">
+                            </div>
+                            <input type="hidden" name="bookId" id="issueModalBookId" value="">
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary py-2 fw-bold text-uppercase" style="letter-spacing: 0.05em;">Confirm & Issue</button>
+                                <button type="button" class="btn btn-light py-2 fw-semibold" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        modalEl = document.getElementById(modalId);
+
+        document.getElementById('issueBookForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const bookId = form.bookId.value;
+            const payload = {
+                userId: user.id,
+                bookId: bookId,
+                name: form.name.value,
+                email: form.email.value,
+                rollNumber: form.rollNumber.value
+            };
+
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            modalInstance.hide();
+
+            toggleLoading(true);
+            try {
+                const res = await fetch(`${API_URL}/books/issue`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showToast('Book issued successfully! Check your email for confirmation.', 'success');
+                    // Refresh current view based on where we are
+                    const deptFilter = document.getElementById('deptFilter');
+                    if (window.location.pathname.includes('books.html')) {
+                        fetchBooks(deptFilter ? deptFilter.value : 'All');
+                    } else if (window.location.pathname.includes('cart.html')) {
+                        loadCartItems();
+                    }
+                } else {
+                    showToast(data.message || 'Error issuing book', 'error');
+                }
+            } catch (err) {
+                showToast('Error issuing book', 'error');
+            } finally {
+                toggleLoading(false);
             }
-        } catch (err) {
-            showToast('Error issuing book', 'error');
-        } finally {
-            toggleLoading(false);
-        }
-    });
+        });
+    }
+
+    document.getElementById('issueModalBookId').value = id;
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
 }
 
 async function updateCartBadge() {
