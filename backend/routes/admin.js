@@ -10,7 +10,7 @@ const { protect, adminOnly } = require('../middleware/authMiddleware');
 router.get('/stats', protect, adminOnly, async (req, res) => {
     try {
         const [books] = await db.query('SELECT COUNT(*) as total FROM books');
-        const [users] = await db.query('SELECT COUNT(*) as total FROM users WHERE role != "admin"');
+        const [users] = await db.query("SELECT COUNT(*) as total FROM users WHERE role != 'admin'");
         const [issued] = await db.query('SELECT COUNT(*) as total FROM issued_books WHERE returned_at IS NULL');
 
         res.json({
