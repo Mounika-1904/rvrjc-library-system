@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | RVR & JC Library</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top fixed-bg">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <span class="logo-top">ADMIN PANEL</span>
+                <span class="logo-bottom">LEARNING HUB</span>
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="profile-avatar" id="adminAvatar">AD</div>
+                    <div class="profile-menu">
+                        <div class="profile-menu-header">
+                            <h4 class="profile-menu-name" id="adminName">Admin User</h4>
+                            <span class="profile-menu-id" id="adminId">RVRLIBADMIN</span>
+                        </div>
+                        <ul class="profile-menu-list">
+                            <li class="profile-menu-item">
+                                <span>Role</span>
+                                <span class="text-capitalize" id="adminRole">Admin</span>
+                            </li>
+                        </ul>
+                        <button class="profile-menu-logout" onclick="logout()">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container" style="margin-bottom: 64px;">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Library Overview</h2>
+                <p class="text-muted m-0">Real-time statistics and management tools.</p>
+            </div>
+            <button class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal"
+                data-bs-target="#addBookModal">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Add New Book
+            </button>
+        </div>
+
+        <!-- Dashboard Stats -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="stat-card card">
+                    <div class="text-slate-500 small fw-bold text-uppercase mb-2">Total Collection</div>
+                    <h2 id="totalBooks" class="fw-bold m-0 text-primary">0</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card card">
+                    <div class="text-slate-500 small fw-bold text-uppercase mb-2">Total Members</div>
+                    <h2 id="totalMembers" class="fw-bold m-0 text-success">0</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card card">
+                    <div class="text-slate-500 small fw-bold text-uppercase mb-2">Issued Books (Active)</div>
+                    <h2 id="totalIssued" class="fw-bold m-0 text-warning">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Table -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="fw-bold m-0">Recent Activity</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>User</th>
+                            <th>Book Title</th>
+                            <th>Issued Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activityTable">
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">Loading activity...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Approvals Table -->
+            <div class="card border-0 shadow-sm mt-5">
+                <div class="card-header bg-white py-3">
+                    <h5 class="fw-bold m-0">Pending Approvals</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>User ID</th>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Department</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approvalsTable">
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">Loading pending approvals...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    </main>
+
+    <!-- Add Book Modal -->
+    <div class="modal fade" id="addBookModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header">
+                    <h5 class="fw-bold m-0">Add New Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="addBookForm">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Book Title</label>
+                            <input type="text" class="form-control" name="title" required placeholder="e.g. Clean Code">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Author</label>
+                            <input type="text" class="form-control" name="author" required
+                                placeholder="e.g. Robert C. Martin">
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Department</label>
+                                <select class="form-select" name="department" required>
+                                    <option value="CSE">CSE</option>
+                                    <option value="ECE">ECE</option>
+                                    <option value="Information Technology">IT</option>
+                                    <option value="Mechanical Engineering">Mechanical</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">ISBN</label>
+                                <input type="text" class="form-control" name="isbn" required
+                                    placeholder="13-digit ISBN">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Cover Image URL</label>
+                            <input type="url" class="form-control" name="imageUrl" placeholder="https://...">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mt-2">Add to Catalog</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- UX Components -->
+    <div id="toastContainer" class="toast-container position-fixed bottom-0 end-0"></div>
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner-border spinner-custom" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        // Admin specific logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user || user.role !== 'admin') {
+                window.location.href = 'index.html';
+                return;
+            }
+            if (user) {
+                document.getElementById('adminName').innerText = user.name;
+                document.getElementById('adminId').innerText = user.uniqueId;
+                document.getElementById('adminRole').innerText = user.role;
+                const initials = user.name ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'A';
+                document.getElementById('adminAvatar').innerText = initials;
+            }
+
+            // Profile Dropdown Toggle Logic
+            const dropdown = document.getElementById('profileDropdown');
+            dropdown.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.classList.toggle('open');
+            });
+
+            document.addEventListener('click', () => {
+                if (dropdown.classList.contains('open')) {
+                    dropdown.classList.remove('open');
+                }
+            });
+
+            fetchAdminStats();
+            fetchAdminActivity();
+
+            const addBookForm = document.getElementById('addBookForm');
+            if (addBookForm) {
+                addBookForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const formData = Object.fromEntries(new FormData(e.target));
+                    toggleLoading(true);
+                    try {
+                        const res = await fetch(`${API_URL}/admin/books`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                            },
+                            body: JSON.stringify(formData)
+                        });
+                        const data = await res.json();
+                        if (res.ok) {
+                            showToast('Book added successfully!');
+                            bootstrap.Modal.getInstance(document.getElementById('addBookModal')).hide();
+                            addBookForm.reset();
+                            fetchAdminStats();
+                        } else {
+                            showToast(data.message, 'error');
+                        }
+                    } catch (err) {
+                        showToast('Failed to add book', 'error');
+                    } finally {
+                        toggleLoading(false);
+                    }
+                });
+            }
+        });
+
+        async function fetchAdminStats() {
+            try {
+                const res = await fetch(`${API_URL}/admin/stats`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const stats = await res.json();
+                document.getElementById('totalBooks').innerText = (1000 + parseInt(stats.totalBooks || 0)) + '+';
+
+                const memberCount = 8000 + parseInt(stats.totalMembers || 0);
+                document.getElementById('totalMembers').innerText = memberCount >= 1000 ? (memberCount / 1000).toFixed(1).replace('.0', '') + 'k+' : memberCount + '+';
+
+                document.getElementById('totalIssued').innerText = (300 + parseInt(stats.activeIssuances || 0)) + '+';
+            } catch (err) {
+                console.error('Error loading stats', err);
+            }
+        }
+
+        async function fetchAdminActivity() {
+            try {
+                const res = await fetch(`${API_URL}/admin/activity`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const activities = await res.json();
+                const table = document.getElementById('activityTable');
+                if (activities.length === 0) {
+                    table.innerHTML = '<tr><td colspan="4" class="text-center py-4">No recent activity found.</td></tr>';
+                    return;
+                }
+                table.innerHTML = activities.map(act => `
+                    <tr>
+                        <td class="fw-bold">${act.userName}</td>
+                        <td class="text-muted">${act.bookTitle}</td>
+                        <td>${new Date(act.issued_at).toLocaleDateString()}</td>
+                        <td>
+                            <span class="badge ${act.returned_at ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning'}">
+                                ${act.returned_at ? 'Returned' : 'Active'}
+                            </span>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading activity');
+            }
+        }
+        async function fetchPendingApprovals() {
+            try {
+                const res = await fetch(`${API_URL}/admin/users/pending`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const users = await res.json();
+                const table = document.getElementById('approvalsTable');
+                if (users.length === 0) {
+                    table.innerHTML = '<tr><td colspan="5" class="text-center py-4">No pending approvals.</td></tr>';
+                    return;
+                }
+                table.innerHTML = users.map(u => `
+                    <tr>
+                        <td class="fw-bold">${u.unique_id}</td>
+                        <td class="text-muted">${u.name}</td>
+                        <td class="text-capitalize">${u.role}</td>
+                        <td>${u.department || 'N/A'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-success fw-bold" onclick="approveUser(${u.id})">Approve</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading pending approvals', err);
+            }
+        }
+
+        async function approveUser(userId) {
+            if (!confirm('Are you sure you want to approve this user?')) return;
+            try {
+                const res = await fetch(`${API_URL}/admin/users/approve/${userId}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                if (res.ok) {
+                    showToast('User approved successfully!');
+                    fetchPendingApprovals();
+                    fetchAdminStats();
+                } else {
+                    const data = await res.json();
+                    showToast(data.message || 'Failed to approve user', 'error');
+                }
+            } catch (err) {
+                showToast('API Error', 'error');
+            }
+        }
+
+        // Call fetchPendingApprovals on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPendingApprovals();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1772166526759,
+    "unique_id": "T1772166526585",
+    "name": "Automation Test",
+    "email": "auto-1772166526585@rvrjc.ac.in",
+    "password": "$2a$10$Zc6cmO7afjz5tZfSG7w7HeOaeTj8rrpwjITQPzmAHNDWJzWf/JVe.",
+    "role": "student",
+    "department": "CSE",
+    "is_approved": true
+  },
+  {
+    "id": 1772166681922,
+    "unique_id": "y23cd122",
+    "name": "Mounika Mogalapalli",
+    "email": "y23cd122@rvrjc.ac.in",
+    "password": "$2a$10$0wGbs6dRbtvimzRKlnE/Tui3RoJdmhXFR88FFrQ79ODNOMKeoQaN.",
+    "role": "student",
+    "department": "CSE-DS",
+    "is_approved": true
+  },
+  {
+    "id": 1772167200499,
+    "unique_id": "T1772167200343",
+    "name": "Auth Test User",
+    "email": "auth-1772167200343@rvrjc.ac.in",
+    "password": "$2a$10$qaChQcrieOjOaaIFLs4ixOsyMeQoBEb5l8xEoyYVpT9RC1I/3f.XW",
+    "role": "student",
+    "department": "CSE"
+  },
+  {
+    "id": 1772338169178,
+    "unique_id": "Y23CD555",
+    "name": "Test user",
+    "email": "test@test.com",
+    "password": "$2a$10$82DSwJRDGSJ2ItD.UBE2JeRzD01RO0UaTKgcB2JxwAPc7jA74KMw.",
+    "role": "student",
+    "department": "CSE",
+    "is_approved": false
+  }
+]

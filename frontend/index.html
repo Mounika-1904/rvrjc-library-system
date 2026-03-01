@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RVR & JC College Library | Welcome</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <span class="logo-top">RVR & JC College of Engineering</span>
+                <span class="logo-bottom">LEARNING HUB</span>
+            </a>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="books.html">Catalog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="membership.html">Join Us</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="nav-link position-relative" href="cart.html" aria-label="Cart">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            <span id="cartBadge"
+                                class="position-absolute top-10 start-100 translate-middle badge rounded-pill bg-danger"
+                                style="font-size: 0.6rem; display: none;">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item ms-lg-3"><a class="nav-link btn-login" href="login.html">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main style="margin-top: calc(var(--nav-height) + var(--space-4));">
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="container d-flex justify-content-center">
+                <div class="hero-content animate-fade-in-up">
+                    <span class="hero-badge animate-fade-in">✨ Modern Learning Experience</span>
+                    <h1>Where Knowledge Meets Opportunity</h1>
+                    <p>Unlock your potential with access to premium educational resources, cutting-edge research
+                        materials,
+                        and a diverse collection of digital archives at RVR & JC College.</p>
+                    <div class="hero-actions d-flex justify-content-center gap-3">
+                        <a href="books.html" class="btn btn-primary px-5">Explore Library</a>
+                        <a href="membership.html" class="btn btn-outline-light px-5">Join Membership</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Statistics Section -->
+        <section class="stats-section reveal">
+            <div class="container">
+                <div class="row g-4 text-center">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h2 class="counter" data-target="25000" style="color: var(--primary-blue);">0</h2>
+                            <p>Total Books</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h2 class="counter" data-target="5000" style="color: var(--primary-blue);">0</h2>
+                            <p>Active Members</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h2 class="counter" data-target="1500" style="color: var(--primary-blue);">0</h2>
+                            <p>E-Resources</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h2 class="counter" data-target="50" style="color: var(--primary-blue);">0</h2>
+                            <p>Daily Issues</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Departments Section -->
+        <section class="section-standard bg-white">
+            <div class="container">
+                <div class="text-center mb-6 reveal">
+                    <h2 class="fw-bold display-5 mb-3">Academic Departments</h2>
+                    <p class="text-muted lead max-width-700 mx-auto">Specialized resources organized by field of study
+                        to support your academic excellence.</p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-3 col-md-6 reveal" data-delay="100">
+                        <a href="books.html?department=CSE" class="text-decoration-none text-dark h-100 d-block">
+                            <div class="dept-card card shadow-sm hover-lift">
+                                <div class="icon-box mx-auto">
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                                    </svg>
+                                </div>
+                                <h3 class="h5 fw-bold mb-3">CS & Engineering</h3>
+                                <p class="small mb-0 opacity-75">AI, ML, DS, and IoT Resources for the digital era.</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-md-6 reveal" data-delay="200">
+                        <a href="books.html?department=ECE" class="text-decoration-none text-dark h-100 d-block">
+                            <div class="dept-card card shadow-sm hover-lift">
+                                <div class="icon-box mx-auto">
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <rect x="2" y="3" width="20" height="14" rx="2" />
+                                        <line x1="8" y1="21" x2="16" y2="21" />
+                                        <line x1="12" y1="17" x2="12" y2="21" />
+                                    </svg>
+                                </div>
+                                <h3 class="h5 fw-bold mb-3">Electronics & Comm</h3>
+                                <p class="small mb-0 opacity-75">VLSI & Embedded Systems documentation.</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-md-6 reveal" data-delay="300">
+                        <a href="books.html?department=Mechanical Engineering"
+                            class="text-decoration-none text-dark h-100 d-block">
+                            <div class="dept-card card shadow-sm hover-lift">
+                                <div class="icon-box mx-auto">
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <circle cx="12" cy="12" r="3" />
+                                        <path
+                                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                                    </svg>
+                                </div>
+                                <h3 class="h5 fw-bold mb-3">Mechanical Engg</h3>
+                                <p class="small mb-0 opacity-75">Robotics & Industry 4.0 technical archives.</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-md-6 reveal" data-delay="400">
+                        <a href="books.html?department=Management Sciences"
+                            class="text-decoration-none text-dark h-100 d-block">
+                            <div class="dept-card card shadow-sm hover-lift">
+                                <div class="icon-box mx-auto">
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <line x1="12" y1="1" x2="12" y2="23" />
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                    </svg>
+                                </div>
+                                <h3 class="h5 fw-bold mb-3">Management</h3>
+                                <p class="small mb-0 opacity-75">Finance, HR & Strategy case studies.</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="section-standard" style="background: var(--primary-blue);">
+        <div class="container text-center">
+            <h4 class="fw-bold mb-4" style="color: var(--accent-gold);">RVR & JC College of Engineering</h4>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-4">
+                    <p class="mb-0 text-white-50">Guntur, Andhra Pradesh, India</p>
+                    <p class="mb-0 text-white-50">library@rvrjc.ac.in</p>
+                </div>
+            </div>
+            <hr class="my-5 opacity-25 bg-white">
+            <p class="mb-0 text-white-50 small">&copy; 2024 RVR & JC Library. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Common UX Components -->
+    <div id="toastContainer" class="toast-container position-fixed bottom-0 end-0"></div>
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner-border spinner-custom" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-body p-4 text-center">
+                    <h5 class="fw-bold mb-3" id="confirmTitle">Confirm Action</h5>
+                    <p class="text-muted mb-4" id="confirmMessage">Are you sure you want to proceed?</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="confirmBtn" class="btn btn-primary px-4">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,4 @@
+Server running on http://localhost:5000
+CRITICAL: Unable to connect to MySQL. Falling back to Mock JSON database.
+Reason: ECONNREFUSED
+^C
