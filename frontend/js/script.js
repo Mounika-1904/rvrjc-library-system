@@ -751,8 +751,8 @@ async function loadCartItems() {
                         <p class="text-muted small mb-0">By ${item.author} &bull; ${item.department}</p>
                     </div>
                     <div class="d-flex flex-column gap-2 ms-3">
-                        <button onclick="issueBook(${item.book_id || item.id})" class="btn btn-issue btn-sm px-4 fw-bold">Book Now</button>
-                        <button onclick="removeFromCart(${item.cart_id})" class="btn btn-light text-danger btn-sm px-3 fw-semibold border">Remove</button>
+                        <button onclick="issueBook(${item.book_id || item.id})" class="btn btn-warning btn-sm px-4 fw-bold shadow-sm">Book Now</button>
+                        <button onclick="removeFromCart(${item.cart_id})" class="btn btn-outline-danger btn-sm px-3 fw-semibold">Remove</button>
                     </div>
                 </div>
             </div>
