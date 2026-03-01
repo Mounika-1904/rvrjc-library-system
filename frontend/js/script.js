@@ -611,6 +611,10 @@ async function updateCartBadge() {
                 badge.innerText = items.length;
                 badge.style.display = items.length > 0 ? 'inline-block' : 'none';
             });
+        } else if (res.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            // Silent cleanup for badge update on background fail
         }
     } catch (err) {
         console.error('Failed to update cart badge', err);
@@ -639,7 +643,14 @@ async function addToCart(bookId) {
             showToast('Book added to cart!');
             updateCartBadge();
         } else {
-            showToast(data.message || 'Failed to add to cart', 'error');
+            if (data.isExpired || res.status === 401) {
+                showToast('Your session has expired. Please login again.', 'error');
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+            } else {
+                showToast(data.message || 'Failed to add to cart', 'error');
+            }
         }
     } catch (err) {
         showToast('Error adding to cart', 'error');
@@ -676,6 +687,11 @@ async function loadCartItems() {
         const res = await fetch(`${API_URL}/cart`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
+
+        if (res.status === 401) {
+            throw new Error('401 Unauthorized');
+        }
+
         const items = await res.json();
 
         if (items.length === 0) {
@@ -713,7 +729,14 @@ async function loadCartItems() {
             </div>
         `).join('');
     } catch (err) {
-        container.innerHTML = '<div class="text-danger text-center py-4">Failed to load cart items. Please try again.</div>';
+        if (err.message && err.message.includes('401')) {
+            showToast('Your session has expired. Please login again.', 'error');
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            setTimeout(() => window.location.href = 'login.html', 1500);
+        } else {
+            container.innerHTML = '<div class="text-danger text-center py-4">Failed to load cart items. Please try again.</div>';
+        }
     }
 }
 
@@ -731,7 +754,14 @@ async function removeFromCart(cartId) {
             updateCartBadge();
             loadCartItems();
         } else {
-            showToast('Failed to remove item', 'error');
+            if (res.status === 401) {
+                showToast('Your session has expired. Please login again.', 'error');
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+            } else {
+                showToast('Failed to remove item', 'error');
+            }
         }
     } catch (err) {
         showToast('Error removing item', 'error');
