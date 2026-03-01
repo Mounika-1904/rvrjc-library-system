@@ -35,36 +35,35 @@ Your computer needs a program called "Git" to upload code to the cloud.
 3. Neon will provide you with a PostgreSQl connection string. It starts with `postgresql://...` or `postgres://...`
 4. Copy this connection string. You will need it in the next step.
 
-## 2. Deploy Backend on Render
-1. Push this codebase to your GitHub account.
-2. Go to [Render.com](https://render.com/) and sign up with GitHub.
-3. Click on **New +** and select **Web Service**.
-4. Connect the GitHub repository containing this code.
-5. In the settings:
-   - **Root Directory**: `backend` (Important!)
-   - **Environment**: `Node`
-   - **Build Command**: `npm install`
-   - **Start Command**: `node server.js` or `npm start`
-6. Scroll down to **Environment Variables** and add:
-   - `DATABASE_URL` = (Paste the Neon connection string from Step 1)
-   - `JWT_SECRET` = (A strong, secure random string)
-7. Click **Create Web Service**. Wait for the deployment to finish.
-8. Once deployed, Render gives you a URL (e.g., `https://rvrjc-library-backend.onrender.com`). Copy this URL.
-
-## 3. Configure Frontend
-1. In your code, open `frontend/js/script.js`.
-2. Locate line 1: `const API_URL = ...`
-3. Replace the placeholder URL (`https://rvrjc-library-backend.onrender.com/api`) with your actual Render backend URL from Step 2.
-4. Commit and push this change to GitHub.
-
-## 4. Deploy Frontend on Vercel (Recommended) or Render
-1. Go to [Vercel.com](https://vercel.com/) and sign in with GitHub.
-2. Click **Add New** -> **Project**.
-3. Import your GitHub repository.
-4. In the configuration:
+## 2. Deploy Backend on Vercel
+1. Push this codebase to your GitHub account (as done in Step 1).
+2. Go to [Vercel.com](https://vercel.com/) and sign up with GitHub.
+3. Click **Add New** -> **Project**.
+4. Import your GitHub repository (`rvrjc-library-system`).
+5. In the configuration settings that appear:
    - **Framework Preset**: `Other`
-   - **Root Directory**: `frontend` (Important!)
-5. Click **Deploy**.
-6. Vercel will build and deploy your frontend, providing you with a live URL!
+   - **Root Directory**: Click "Edit" and type `backend` (Important!).
+6. Expand the **Environment Variables** section and add:
+   - Name: `DATABASE_URL`, Value: (Paste the Neon connection string from Step 1)
+   - Name: `JWT_SECRET`, Value: (A strong, secure random string, e.g. `MyRVRSecretKey2025`)
+7. Click **Deploy**. Wait for the deployment to finish.
+8. Once deployed, Vercel gives you a URL (e.g., `https://rvrjc-library-backend.vercel.app`). Copy this URL.
 
-Your application is now globally accessible and production-ready. 🎉
+## 3. Link Frontend to the New Vercel Backend
+1. In your code editor, open `frontend/js/script.js`.
+2. Locate line 1: `const API_URL = 'http://localhost:5000/api';`
+3. Replace `http://localhost:5000` with your actual Vercel backend URL from Step 2.
+   *Example:* `const API_URL = 'https://rvrjc-library-backend.vercel.app/api';`
+4. Commit and push this change to GitHub (run `git add .`, `git commit -m "update api url"`, `git push`).
+
+## 4. Deploy Frontend on Vercel
+1. Go back to your [Vercel dashboard](https://vercel.com/dashboard) and click **Add New** -> **Project**.
+2. Import the *exact same* GitHub repository (`rvrjc-library-system`) again.
+3. In the configuration settings:
+   - **Project Name:** Name it something different like `rvrjc-library-frontend`
+   - **Framework Preset**: `Other`
+   - **Root Directory**: Click "Edit" and type `frontend` (Important!).
+4. Click **Deploy**.
+5. Vercel will build and deploy your frontend, providing you with a live URL!
+
+Your application is now entirely globally accessible on Vercel! 🎉

@@ -1,6 +1,6 @@
 const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '')
     ? 'http://localhost:5000/api'
-    : 'https://rvrjc-library-backend.onrender.com/api'; // Change this to your actual Render backend URL once deployed.
+    : 'https://rvrjc-library-system-production.up.railway.app/'; // Change this to your actual Render backend URL once deployed.
 
 // UX Utilities
 const showToast = (message, type = 'success') => {
