@@ -53,6 +53,6 @@ This deployment demonstrates practical knowledge of:
   
 2.Student
   
-  Username : y22cs001
+  Username : y23cd122
   
-  Password : kumar@19
+  Password : mouni@1909
