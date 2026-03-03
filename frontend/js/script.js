@@ -428,7 +428,7 @@ async function fetchBooks(dept = 'All') {
     `;
 
     try {
-        const url = dept === 'All' ? `${API_URL}/books` : `${API_URL}/books?department=${dept}`;
+        const url = dept === 'All' ? `${API_URL}/books` : `${API_URL}/books?department=${encodeURIComponent(dept)}`;
         const res = await fetch(url);
         const books = await res.json();
 
