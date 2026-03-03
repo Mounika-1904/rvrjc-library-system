@@ -344,9 +344,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const term = e.target.value.toLowerCase();
             const cards = document.querySelectorAll('.card-col');
             cards.forEach(card => {
-                const title = card.querySelector('.card-title').innerText.toLowerCase();
-                const author = card.querySelector('.card-text').innerText.toLowerCase();
-                if (title.includes(term) || author.includes(term)) {
+                const titleElement = card.querySelector('.book-title');
+                const authorElement = card.querySelector('.book-author');
+                const deptElement = card.querySelector('.book-dept');
+
+                const title = titleElement ? titleElement.innerText.toLowerCase() : '';
+                const author = authorElement ? authorElement.innerText.toLowerCase() : '';
+                const dept = deptElement ? deptElement.innerText.toLowerCase() : '';
+                const isbn = card.dataset.isbn ? card.dataset.isbn.toLowerCase() : '';
+
+                if (title.includes(term) || author.includes(term) || dept.includes(term) || isbn.includes(term)) {
                     card.style.display = 'block';
                 } else {
                     card.style.display = 'none';
@@ -435,7 +442,7 @@ async function fetchBooks(dept = 'All') {
             const isAvailable = stock > 0;
 
             return `
-            <div class="col card-col">
+            <div class="col card-col" data-isbn="${book.isbn}">
                 <article class="book-card h-100">
                     <div class="book-card-image-wrapper">
                         <img src="${book.image_url}" class="book-card-image" alt="Cover of ${book.title}" loading="lazy">
